@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+import { User, onAuthStateChanged, signOut } from 'firebase/auth'
+import AuthModal, { AuthMode } from './AuthModal'
+import { auth } from './firebase'
 
 const NAV = ['Home', 'Admissions', 'Careers', 'About', 'Blogs', 'Contact']
 const PORTALS = ['Admin Login', 'Teacher Login', 'Student Login', 'Parent Login']
@@ -82,6 +85,10 @@ function Carousel() {
 export default function App() {
   const [dark, setDark] = useState(false)
   const [open, setOpen] = useState(false)
+  const [authMode, setAuthMode] = useState<AuthMode | null>(null)
+  const [user, setUser] = useState<User | null>(null)
+  useEffect(() => (auth ? onAuthStateChanged(auth, setUser) : undefined), [])
+  const first = user?.displayName?.split(' ')[0] || user?.email?.split('@')[0]
   useEffect(() => { document.documentElement.dataset.theme = dark ? 'dark' : 'light' }, [dark])
 
   return (
@@ -98,14 +105,31 @@ export default function App() {
           <div className="acts">
             <button className="circ" aria-label="Toggle theme" onClick={() => setDark(!dark)}>{dark ? '☀' : '☾'}</button>
             <button className="ghost">文A&nbsp; Urdu</button>
-            <button className="ghost signin">Sign In</button>
+            {user ? (
+              <>
+                <span className="hello">Hi, {first}</span>
+                <button className="ghost signin" onClick={() => auth && signOut(auth)}>Log out</button>
+              </>
+            ) : (
+              <>
+                <button className="ghost signin" onClick={() => setAuthMode('login')}>Sign In</button>
+                <button className="ghost signup" onClick={() => setAuthMode('signup')}>Sign Up</button>
+              </>
+            )}
             <button className="circ burger" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? '✕' : '☰'}</button>
           </div>
         </div>
         {open && (
           <nav className="drawer">
             {NAV.map((l, i) => <a key={l} href="#" className={i === 0 ? 'cur' : ''} onClick={() => setOpen(false)}>{l}</a>)}
-            <a href="#" className="dsignin" onClick={() => setOpen(false)}>Sign In</a>
+            {user ? (
+              <a href="#" className="dsignin" onClick={() => { setOpen(false); auth && signOut(auth) }}>Log out ({first})</a>
+            ) : (
+              <>
+                <a href="#" className="dsignin" onClick={(e) => { e.preventDefault(); setOpen(false); setAuthMode('login') }}>Sign In</a>
+                <a href="#" className="dsignin alt" onClick={(e) => { e.preventDefault(); setOpen(false); setAuthMode('signup') }}>Sign Up</a>
+              </>
+            )}
           </nav>
         )}
       </header>
@@ -119,7 +143,7 @@ export default function App() {
               <h1>PAKISTAN'S<br />PREMIER<br /><span>ONLINE SCHOOL</span></h1>
               <p>Complete KG to 8th grade education following Punjab Board (PCTB 2026). Officially incorporated as <b>Indus Virtual School (Private) Limited</b> under SECP.</p>
               <div className="btns">
-                <a className="btn primary" href="#">Apply for Admission →</a>
+                <a className="btn primary" href="#" onClick={(e) => { e.preventDefault(); setAuthMode(user ? null : 'signup') }}>Apply for Admission →</a>
                 <a className="btn outline" href="#features">Explore Features ↓</a>
               </div>
             </div>
@@ -151,6 +175,8 @@ export default function App() {
           <Carousel />
         </section>
       </main>
+
+      {authMode && <AuthModal mode={authMode} onMode={setAuthMode} onClose={() => setAuthMode(null)} />}
 
       <footer className="foot">
         <div className="wrap fgrid">
