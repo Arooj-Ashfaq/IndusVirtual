@@ -27,3 +27,17 @@ flutter build apk --release       # Android
 flutter build appbundle           # Play Store
 ```
 Without Firebase config the app still runs; the auth forms show a "not configured" notice.
+
+## Admission form (Firestore + Storage)
+The 3-step form (Personal / Parents / Education) saves to the same Firebase project:
+- **Firestore** → collection `admissions`, one document per user (`admissions/{uid}`), `status: "pending"`.
+- **Storage** → `admissions/{uid}/cnic.<ext>` (the uploaded CNIC / B-Form).
+- The password is used only to create the Firebase Auth account; it is never stored in Firestore.
+
+Setup in Firebase Console:
+1. **Build → Firestore Database → Create database**, then **Rules** tab → paste `firestore.rules` → **Publish**.
+2. **Build → Storage → Get started**, then **Rules** tab → paste `storage.rules` → **Publish**.
+   (New Firebase projects may require the Blaze pay-as-you-go plan to enable Storage.)
+3. Review applications in **Firestore Database → Data → admissions**.
+
+Run `flutter pub get` again after pulling (new packages: cloud_firestore, firebase_storage, file_picker).

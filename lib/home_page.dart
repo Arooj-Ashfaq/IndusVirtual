@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'auth_service.dart';
+import 'admission/admission_page.dart';
 import 'auth_sheet.dart';
 import 'theme.dart';
 
@@ -142,7 +143,12 @@ class _NavDrawer extends StatelessWidget {
                   style: TextStyle(
                       color: i == 0 ? kAmber : Colors.white70,
                       fontWeight: i == 0 ? FontWeight.w700 : FontWeight.w500)),
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                Navigator.pop(context);
+                if (_nav[i] == 'Admissions') {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdmissionPage()));
+                }
+              },
             ),
           const Divider(color: Colors.white24),
           const SizedBox(height: 8),
@@ -228,10 +234,7 @@ class _Hero extends StatelessWidget {
       const SizedBox(height: 28),
       Wrap(spacing: 14, runSpacing: 12, children: [
         FilledButton(
-          onPressed: () => user == null
-              ? showAuthSheet(context, AuthMode.signup)
-              : ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('You are signed in. Admission form coming soon.'))),
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdmissionPage())),
           style: FilledButton.styleFrom(
             backgroundColor: kAmber,
             foregroundColor: kDark,
