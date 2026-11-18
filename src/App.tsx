@@ -81,6 +81,7 @@ function Carousel() {
 
 export default function App() {
   const [dark, setDark] = useState(false)
+  const [open, setOpen] = useState(false)
   useEffect(() => { document.documentElement.dataset.theme = dark ? 'dark' : 'light' }, [dark])
 
   return (
@@ -97,9 +98,16 @@ export default function App() {
           <div className="acts">
             <button className="circ" aria-label="Toggle theme" onClick={() => setDark(!dark)}>{dark ? '☀' : '☾'}</button>
             <button className="ghost">文A&nbsp; Urdu</button>
-            <button className="ghost">Sign In</button>
+            <button className="ghost signin">Sign In</button>
+            <button className="circ burger" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? '✕' : '☰'}</button>
           </div>
         </div>
+        {open && (
+          <nav className="drawer">
+            {NAV.map((l, i) => <a key={l} href="#" className={i === 0 ? 'cur' : ''} onClick={() => setOpen(false)}>{l}</a>)}
+            <a href="#" className="dsignin" onClick={() => setOpen(false)}>Sign In</a>
+          </nav>
+        )}
       </header>
 
       <main>
