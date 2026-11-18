@@ -116,7 +116,7 @@ export default function App() {
               </div>
             </div>
             <div className="art">
-              <img src="/hero.png" alt="Student learning on the Indus Virtual School portal" />
+              <img src="/hero.webp" alt="Student learning on the Indus Virtual School portal" />
               <div className="float">
                 <span>🎓</span>
                 <div><b>PCTB 2026 Curriculum</b><small>KG to 8th Class • Live & Interactive</small></div>
@@ -125,14 +125,16 @@ export default function App() {
           </div>
         </section>
 
-        <section className="stats">
-          <div className="statsin">
-            {STATS.map((s, i) => (
-              <div className="stat" key={s.l}>
-                <img src={`/stat${i + 1}.png`} alt="" />
-                <div><b>{s.v}</b><small>{s.l}</small></div>
-              </div>
-            ))}
+        <section className="stats" aria-label="Key facts">
+          <div className="marquee">
+            <div className="track">
+              {[...STATS, ...STATS].map((s, i) => (
+                <div className="stat" key={i} aria-hidden={i >= STATS.length}>
+                  <img src={`/stat${(i % STATS.length) + 1}.png`} alt="" />
+                  <div><b>{s.v}</b><small>{s.l}</small></div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
