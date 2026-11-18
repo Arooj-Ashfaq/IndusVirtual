@@ -1,23 +1,29 @@
-# Indus Virtual School — Homepage
+# Indus Virtual School — Flutter app
 
-React + TypeScript (Vite) homepage.
+Flutter port of the website homepage, with Firebase login / sign up (email + Google).
 
-## Run locally
+## 1. Generate platform folders (once)
+This repo contains only the Dart code and assets. From the project root run:
 ```bash
-npm install
-npm run dev
+flutter create . --project-name indus_virtual_school --platforms=android,ios
+rm -f test/widget_test.dart   # default test references a different app class
+flutter pub get
 ```
+Android: in `android/app/build.gradle(.kts)` set `minSdk = 23` (needed by Firebase).
 
-## Deploy on Vercel
-1. Import this repo at https://vercel.com/new
-2. Framework preset: **Vite** (auto-detected, settings come from `vercel.json`)
-3. Click **Deploy**
+## 2. Connect Firebase
+```bash
+dart pub global activate flutterfire_cli
+flutterfire configure
+```
+Pick your Firebase project and platforms. This overwrites `lib/firebase_options.dart` and adds
+`google-services.json` / `GoogleService-Info.plist`.
+In Firebase Console → Authentication → Sign-in method, enable **Email/Password** and **Google**.
 
-Build command: `npm run build` · Output directory: `dist`
-
-## Firebase Auth setup
-1. Firebase Console → create a project → **Add app → Web** and copy the config.
-2. **Build → Authentication → Sign-in method**: enable **Email/Password** and **Google**.
-3. **Authentication → Settings → Authorized domains**: add your Vercel domain (e.g. `your-app.vercel.app`) and any custom domain.
-4. Locally: copy `.env.example` to `.env` and fill in the values.
-5. Vercel: Project → Settings → Environment Variables → add the same six `VITE_FIREBASE_*` keys, then redeploy.
+## 3. Run / build
+```bash
+flutter run
+flutter build apk --release       # Android
+flutter build appbundle           # Play Store
+```
+Without Firebase config the app still runs; the auth forms show a "not configured" notice.
