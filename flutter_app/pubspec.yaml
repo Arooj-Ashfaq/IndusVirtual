@@ -1,0 +1,19 @@
+name: indus_virtual_school
+description: Indus Virtual School - Pakistan's premier online school (KG to 8th, PCTB 2026).
+publish_to: none
+version: 1.0.1+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  google_fonts: ^6.2.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
