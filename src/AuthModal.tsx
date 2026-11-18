@@ -18,9 +18,18 @@ const ERRORS: Record<string, string> = {
   'auth/too-many-requests': 'Too many attempts. Try again in a few minutes.',
   'auth/network-request-failed': 'Network error. Check your connection.',
   'auth/popup-closed-by-user': 'Google sign-in was cancelled.',
+  'auth/unauthorized-domain': 'This website domain is not authorized in Firebase. Add it under Authentication → Settings → Authorized domains.',
+  'auth/popup-blocked': 'Your browser blocked the Google popup. Allow popups for this site and try again.',
+  'auth/cancelled-popup-request': 'Google sign-in was cancelled.',
+  'auth/configuration-not-found': 'Google sign-in is not enabled in Firebase yet (Authentication → Sign-in method).',
+  'auth/invalid-api-key': 'The Firebase API key is invalid. Check your VITE_FIREBASE_API_KEY.',
+  'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'The Firebase API key is invalid. Check your VITE_FIREBASE_API_KEY.',
   'auth/operation-not-allowed': 'This sign-in method is not enabled in Firebase yet.',
 }
-const errText = (e: unknown) => ERRORS[(e as { code?: string }).code ?? ''] ?? 'Something went wrong. Please try again.'
+const errText = (e: unknown) => {
+  const code = (e as { code?: string }).code ?? ''
+  return ERRORS[code] ?? `Something went wrong (${code || 'unknown error'}). Please try again.`
+}
 
 export default function AuthModal({ mode, onMode, onClose }: { mode: AuthMode; onMode: (m: AuthMode) => void; onClose: () => void }) {
   const [name, setName] = useState('')
